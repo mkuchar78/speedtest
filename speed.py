@@ -118,7 +118,7 @@ class Window(Frame):
         self.labelStatus.config(font=("Courier", 18))
         self.labelStatus.grid(row=2, columnspan=3, sticky=N+E+W)
 
-        self.progressb = ttk.Progressbar(self, orient='horizontal', length=200, maximum=TRIAL_NUM-1)
+        self.progressb = ttk.Progressbar(self, orient='horizontal', length=200, maximum=TRIAL_NUM)
         self.progressb.grid(row=3, ipady=10, sticky=E+W, columnspan=3)
 
         self.separator1 = ttk.Separator(self, orient='horizontal')
@@ -153,11 +153,11 @@ class Window(Frame):
         self.labelAvgP2.config(font=("Courier", 44))
         self.labelAvgP2.grid(row=10, column=2)
 
-        self.separator4 = ttk.Separator(self, orient='horizontal')
-        self.separator4.grid(row=11, columnspan=3, ipady=10, sticky=W+E)
+#        self.separator4 = ttk.Separator(self, orient='horizontal')
+#        self.separator4.grid(row=11, columnspan=3, ipady=10, sticky=W+E)
 
-        self.textBox = Text(self)#, state=DISABLED)
-        self.grid(row=0, column=3, rowspan=11)
+        self.textLog = Text(self, state='disabled', width=40, wrap='none', font=("Helvetica", 18))
+        self.textLog.grid(row=0, column=3, rowspan=12, sticky=N+S)
 
     def game_go(self):
         if not(self.nameP1.get().strip() and self.nameP2.get().strip()):
@@ -175,8 +175,11 @@ class Window(Frame):
         print(self.nameP1.get())
         print(self.nameP2.get())
         
-        for i in range(0, TRIAL_NUM-1):
-
+        self.p1results = [None]*TRIAL_NUM 
+        self.p2results = [None]*TRIAL_NUM 
+       
+        for i in range(0, TRIAL_NUM):
+            print(i)
             #random pause before next round
             sleep(uniform(2, 5))
 
@@ -199,6 +202,10 @@ class Window(Frame):
         self.turnRes[self.turnNum] = ({self.nameP1.get(): self.p1results}, {self.nameP2.get(): self.p2results}) 
         print(self.turnRes)
         
+        #write last turn to log 
+        self.textLog['state'] = 'normal'
+        self.textLog.insert(END, 'Runda '+str(self.turnNum)+': '+self.nameP1.get()+' '+self.avgP1.get()+'| '+self.nameP2.get()+' '+self.avgP2.get()+'\n')
+        self.textLog['state'] = 'disabled'
 
     def displayResults(self, index):
         self.lastP1.set(self.p1results[index]) 
